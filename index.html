@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Timer Lock Screen</title>
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#D97742">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TimerLock">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Geist:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary-fixed-variant": "#47464a",
+                        "tertiary": "#c8c6c8",
+                        "background": "#000000",
+                        "surface-container": "#121212",
+                        "surface-container-high": "#1e1e1e",
+                        "on-primary-fixed": "#341100",
+                        "surface-bright": "#2c2c2c",
+                        "inverse-surface": "#e2e2e2",
+                        "secondary-fixed": "#e4e1e5",
+                        "secondary-container": "#47464a",
+                        "surface-container-low": "#161616",
+                        "on-primary-container": "#4c1b00",
+                        "outline": "#a38c82",
+                        "surface-dim": "#121212",
+                        "on-error": "#690005",
+                        "on-background": "#e2e2e2",
+                        "primary": "#d97742",
+                        "primary-fixed": "#ffdbcb",
+                        "on-primary": "#562000",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#2a2a2c",
+                        "tertiary-fixed-dim": "#c8c6c8",
+                        "primary-fixed-dim": "#ffb692",
+                        "on-primary-fixed-variant": "#793000",
+                        "surface-tint": "#d97742",
+                        "inverse-primary": "#994614",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "surface-container-lowest": "#000000",
+                        "outline-variant": "#55433a",
+                        "tertiary-fixed": "#e4e2e4",
+                        "error-container": "#93000a",
+                        "on-tertiary": "#303032",
+                        "secondary-fixed-dim": "#c8c6c9",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#1b1b1d",
+                        "secondary": "#c8c6c9",
+                        "inverse-on-surface": "#303030",
+                        "on-secondary": "#303033",
+                        "surface-variant": "#2c2c2c",
+                        "surface-container-highest": "#2c2c2c",
+                        "on-surface-variant": "#dbc1b6",
+                        "surface": "#121212",
+                        "tertiary-container": "#929193",
+                        "on-secondary-container": "#b6b4b8",
+                        "primary-container": "#d97742",
+                        "on-surface": "#e2e2e2"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "4xl": "2rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "sans-serif"],
+                        "heading": ["Geist", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #050505;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Material You Glass Card for Android */
+        .glass-panel {
+            background: rgba(30, 30, 30, 0.70);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Active Press visual effect */
+        .active-press:active {
+            transform: scale(0.95);
+            transition: transform 0.1s ease;
+        }
+
+        /* Views transition Layer */
+        .transition-layer {
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Mockup Frame styling on Desktop */
+        @media (max-height: 860px) and (min-width: 769px) {
+            #device-mockup {
+                transform: scale(0.9);
+                transform-origin: center;
+            }
+        }
+        @media (max-height: 770px) and (min-width: 769px) {
+            #device-mockup {
+                transform: scale(0.8);
+                transform-origin: center;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans text-on-surface">
+
+<div class="w-full h-full flex items-center justify-center bg-gradient-to-b from-[#18181A] to-[#0A0A0B]">
+    
+    <!-- Simulated Physical Smartphone Mockup (Sleek Android Bezel) -->
+    <div class="relative w-[410px] h-[840px] md:w-[410px] md:h-[840px] w-screen h-screen bg-black md:border-[10px] md:border-surface-container-high md:rounded-[44px] overflow-hidden md:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8),_0_0_0_1px_rgba(255,255,255,0.05)] flex flex-col transition-all duration-300" id="device-mockup">
+        
+        <!-- Physical Volume Up button (Desktop helper) -->
+        <div class="hidden md:block absolute w-[4px] h-[60px] bg-surface-container-high hover:bg-primary rounded-l-md -left-[14px] top-[180px] z-10 cursor-pointer transition-colors" id="physical-vol-up" title="Volume Up (Trigger Lock Screen)"></div>
+        <div class="hidden md:block absolute w-[4px] h-[60px] bg-surface-container-high rounded-l-md -left-[14px] top-[250px] z-10" title="Volume Down Button (Inactive)"></div>
+        <div class="hidden md:block absolute w-[4px] h-[75px] bg-surface-container-high hover:bg-primary rounded-r-md -right-[14px] top-[220px] z-10 cursor-pointer transition-colors" id="physical-power" title="Power Key (Emergency Exit)"></div>
+
+        <!-- Android Center Punch-Hole Camera (Desktop only) -->
+        <div class="phone-notch hidden md:block absolute top-[14px] left-1/2 -translate-x-1/2 w-[14px] h-[14px] bg-black rounded-full z-50 pointer-events-none shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"></div>
+
+        <!-- Canvas Screen Container -->
+        <div class="w-full h-full relative bg-black flex flex-col overflow-hidden">
+            
+            <!-- 1. HOME / START SCREEN (Android UI) -->
+            <div class="absolute inset-0 w-full h-full flex flex-col justify-between bg-black p-6 pb-2 z-20 transition-layer opacity-100 pointer-events-auto" id="view-dashboard">
+                
+                <!-- Android Status bar -->
+                <header class="w-full flex justify-between items-center text-white/90 text-[11px] font-medium px-2">
+                    <div class="flex items-center gap-1.5">
+                        <span id="home-status-time">12:30</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined !text-[13px] !font-bold">signal_cellular_alt</span>
+                        <span class="material-symbols-outlined !text-[13px]">wifi</span>
+                        <!-- Vertical Battery cylinder -->
+                        <span class="material-symbols-outlined !text-[14px] rotate-90">battery_5_bar</span>
+                    </div>
+                </header>
+
+                <!-- Center Large START Button -->
+                <div class="flex items-center justify-center flex-grow">
+                    <button class="w-[210px] h-[210px] rounded-full bg-primary flex items-center justify-center text-black font-sans font-bold text-3xl tracking-widest shadow-[0_0_40px_rgba(217,119,66,0.3)] hover:shadow-[0_0_55px_rgba(217,119,66,0.55)] hover:scale-105 active:scale-[0.96] transition-all duration-300" id="btn-start-simulation">
+                        START
+                    </button>
+                </div>
+
+                <!-- Bottom Footer Section -->
+                <div class="w-full flex flex-col items-center gap-4">
+                    <p class="text-[9px] font-mono tracking-widest text-[#555] font-semibold text-center uppercase">
+                        TIMER DELITATION BY MELIH GÜZEREL
+                    </p>
+                    
+                    <!-- Settings Button trigger -->
+                    <button class="flex flex-col items-center gap-1 active-press" id="btn-goto-settings">
+                        <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-black shadow-md hover:bg-primary/95">
+                            <span class="material-symbols-outlined !text-[24px]">settings</span>
+                        </div>
+                        <span class="text-[9px] font-bold text-primary tracking-widest uppercase">SETTINGS</span>
+                    </button>
+
+                    <!-- Android 3-Button Navigation Bar -->
+                    <div class="w-[calc(100%+3rem)] -mx-6 bg-transparent py-2.5 px-12 flex justify-around items-center text-white/40 mt-1">
+                        <button class="active-press flex items-center justify-center w-10 h-6" title="Back (Go to Dashboard)">
+                            <span class="material-symbols-outlined !text-[18px]">chevron_left</span>
+                        </button>
+                        <button class="active-press flex items-center justify-center w-10 h-6" title="Home (Go to Dashboard)">
+                            <span class="material-symbols-outlined !text-[14px]">circle</span>
+                        </button>
+                        <button class="active-press flex items-center justify-center w-10 h-6" title="Recents (Inactive)">
+                            <span class="material-symbols-outlined !text-[14px]">square</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. SETTINGS SCREEN (Android Settings) -->
+            <div class="absolute inset-0 w-full h-full flex flex-col justify-between bg-black p-6 pb-2 z-10 transition-layer opacity-0 pointer-events-none" id="view-settings">
+                
+                <!-- Content Scroll Container -->
+                <div class="flex-grow flex flex-col overflow-y-auto pt-2">
+                    
+                    <!-- Android Status bar inside settings -->
+                    <header class="w-full flex justify-between items-center text-white/90 text-[11px] font-medium px-2 mb-6">
+                        <div class="flex items-center gap-1">
+                            <span id="settings-status-time">12:30</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined !text-[12px] !font-bold">signal_cellular_alt</span>
+                            <span class="material-symbols-outlined !text-[12px]">wifi</span>
+                            <span class="material-symbols-outlined !text-[13px] rotate-90">battery_5_bar</span>
+                        </div>
+                    </header>
+
+                    <!-- Settings Title (Android Style) -->
+                    <div class="px-2 mb-6">
+                        <h1 class="text-3xl font-sans font-medium text-white">Settings</h1>
+                    </div>
+
+                    <!-- Section: APPEARANCE -->
+                    <div class="w-full mb-5">
+                        <h2 class="text-[11px] font-sans font-bold text-[#777] tracking-widest px-3 mb-2 uppercase">APPEARANCE</h2>
+                        <div class="w-full bg-[#18181a] border border-white/5 rounded-[24px] p-4 flex flex-col gap-3">
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[10px] font-sans font-bold text-[#D97742] tracking-wider uppercase">CHANGE THE TEXT</label>
+                                <div class="relative flex items-center bg-[#222] rounded-xl border border-white/10 px-3 py-2.5">
+                                    <input class="w-full bg-transparent text-white text-sm outline-none pr-8 font-sans placeholder-white/40" type="text" id="input-notif-title" placeholder="Enter timer text (e.g., TIMER)" value="TIMER">
+                                    <span class="material-symbols-outlined text-white/50 absolute right-3 !text-[18px]">edit</span>
+                                </div>
+                                <p class="text-[10px] text-[#555] px-1 font-sans">This text will appear above the timer on the lock screen.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: SIMULATION SETTINGS -->
+                    <div class="w-full mb-5">
+                        <h2 class="text-[11px] font-sans font-bold text-[#777] tracking-widest px-3 mb-2 uppercase">SIMULATION SETTINGS</h2>
+                        <div class="w-full bg-[#18181a] border border-white/5 rounded-[24px] p-4 flex flex-col gap-4">
+                            
+                            <!-- Custom Wallpaper -->
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-sans font-bold text-primary tracking-wider uppercase">Wallpaper Selection</label>
+                                <div class="grid grid-cols-4 gap-2" id="settings-wp-grid">
+                                    <!-- Preset 1 (House by lake under starry night sky) -->
+                                    <div class="aspect-[9/16] rounded-lg border-2 border-primary cursor-pointer overflow-hidden transition-all wp-item-settings active" data-wp-url="https://lh3.googleusercontent.com/aida/AP1WRLsaLdo-HR5UkOypiNG7o7m2dolIzeE8hK4co6z7mq5p97WBqYbwyBKqeA1us3pda6_s-4gxIbJ_zSP9mEO0pnQQENFjQEjmc8DdLLGvPIJ6Uq9CvlYBMYTmJIN-e6UaJezp9J49dPEynftmF3tIRoSUak3ipVnO9HOpSFfU1ZcSYjSY5ZUkawK6ozJRja_FKHhFWATVdLfsFNbtEt-JHOV0t6rzSND1Qn-3VRHxCn38nTFy0f1WwzaehA_I">
+                                        <img src="https://lh3.googleusercontent.com/aida/AP1WRLsaLdo-HR5UkOypiNG7o7m2dolIzeE8hK4co6z7mq5p97WBqYbwyBKqeA1us3pda6_s-4gxIbJ_zSP9mEO0pnQQENFjQEjmc8DdLLGvPIJ6Uq9CvlYBMYTmJIN-e6UaJezp9J49dPEynftmF3tIRoSUak3ipVnO9HOpSFfU1ZcSYjSY5ZUkawK6ozJRja_FKHhFWATVdLfsFNbtEt-JHOV0t6rzSND1Qn-3VRHxCn38nTFy0f1WwzaehA_I" class="w-full h-full object-cover">
+                                    </div>
+                                    <!-- Preset 2 -->
+                                    <div class="aspect-[9/16] rounded-lg border-2 border-transparent cursor-pointer overflow-hidden transition-all wp-item-settings" data-wp-url="https://lh3.googleusercontent.com/aida/AP1WRLtrILAmwE-4N_W5PqXZecJ6f11-EMIEwDpHyGV3s6FTY-tmCWYbEqGka3kat9lRBwZ0U11lUugUDYX056ekm0RJgTiCsXv0wcejeaepLq8hWQUdytRn4ENjVUMTjzXeQ6FjQg19VznOfXh-QeV0y4h5HJO_J2AIML1jWOEsU1g9Fm810FFnrQ8viCZbRDo3AS-hFJBkvciAMR45OElNBcUd46a8eisKpelQYHjudacApOixchK5ASXddCmR">
+                                        <img src="https://lh3.googleusercontent.com/aida/AP1WRLtrILAmwE-4N_W5PqXZecJ6f11-EMIEwDpHyGV3s6FTY-tmCWYbEqGka3kat9lRBwZ0U11lUugUDYX056ekm0RJgTiCsXv0wcejeaepLq8hWQUdytRn4ENjVUMTjzXeQ6FjQg19VznOfXh-QeV0y4h5HJO_J2AIML1jWOEsU1g9Fm810FFnrQ8viCZbRDo3AS-hFJBkvciAMR45OElNBcUd46a8eisKpelQYHjudacApOixchK5ASXddCmR" class="w-full h-full object-cover">
+                                    </div>
+                                    <!-- Preset 3 -->
+                                    <div class="aspect-[9/16] rounded-lg border-2 border-transparent cursor-pointer overflow-hidden transition-all wp-item-settings" data-wp-url="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=400">
+                                        <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=100" class="w-full h-full object-cover">
+                                    </div>
+                                    <!-- Preset 4 -->
+                                    <div class="aspect-[9/16] rounded-lg border-2 border-transparent cursor-pointer overflow-hidden transition-all wp-item-settings" data-wp-url="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=400">
+                                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=100" class="w-full h-full object-cover">
+                                    </div>
+                                </div>
+                                <button class="w-full mt-1 bg-[#222] border border-dashed border-primary/40 hover:bg-primary/5 py-2 rounded-lg text-xs font-semibold text-primary flex items-center justify-center gap-1.5 active-press" id="btn-settings-custom-wp">
+                                    <span class="material-symbols-outlined !text-[14px]">upload_file</span>
+                                    Upload Custom Wallpaper
+                                </button>
+                                <input type="file" id="input-settings-wp-file" accept="image/*" class="hidden">
+                            </div>
+
+                            <!-- Alert sound & volume -->
+                            <div class="flex flex-col gap-2 border-t border-white/5 pt-3">
+                                <label class="text-[10px] font-sans font-bold text-primary tracking-wider uppercase">Siren Sound Config</label>
+                                <div class="flex gap-2 items-center">
+                                    <select class="flex-grow bg-[#222] border border-white/10 rounded-xl p-2.5 text-white text-xs outline-none cursor-pointer" id="select-settings-sound">
+                                        <option value="beep">Digital Beep (Synth)</option>
+                                        <option value="siren">Emergency Siren (Synth)</option>
+                                        <option value="bell">Retro Bell (Synth)</option>
+                                        <option value="custom">Custom Audio File</option>
+                                    </select>
+                                    <button class="bg-[#222] border border-white/10 text-on-surface hover:text-primary w-[38px] h-[38px] rounded-xl flex items-center justify-center active-press" id="btn-settings-test-sound">
+                                        <span class="material-symbols-outlined !text-[18px]">volume_up</span>
+                                    </button>
+                                </div>
+                                <div class="hidden flex-col gap-1 mt-1" id="settings-audio-row">
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" class="flex items-center gap-1.5 bg-[#222] border border-white/10 hover:border-primary/50 rounded-xl px-3 py-2 text-white text-xs font-semibold cursor-pointer active-press transition-colors" id="btn-choose-audio-file">
+                                            <span class="material-symbols-outlined !text-[15px] text-primary">audio_file</span>
+                                            Choose Audio File
+                                        </button>
+                                        <span class="text-[10px] text-white/40 truncate max-w-[120px]" id="audio-file-name">No file selected</span>
+                                    </div>
+                                    <input type="file" id="input-settings-audio" accept="audio/*" class="hidden">
+                                </div>
+                                <div class="flex items-center gap-3 text-xs text-on-surface-variant mt-1.5">
+                                    <span class="material-symbols-outlined !text-[15px]">volume_mute</span>
+                                    <input type="range" class="flex-grow accent-primary h-1 bg-black/40 rounded-lg outline-none cursor-pointer" id="slider-settings-volume" min="0" max="1" step="0.05" value="0.7">
+                                    <span class="material-symbols-outlined !text-[15px]">volume_up</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: ADVANCED -->
+                    <div class="w-full mb-8">
+                        <h2 class="text-[11px] font-sans font-bold text-[#777] tracking-widest px-3 mb-2 uppercase">ADVANCED</h2>
+                        <div class="w-full bg-[#18181a] border border-white/5 rounded-[24px] flex flex-col divide-y divide-white/5">
+                            
+                            <!-- Change Lock Screen -->
+                            <div class="flex items-center justify-between p-4 cursor-pointer active-press hover:bg-white/[0.02]" id="btn-advanced-lockscreen">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-red-800 flex items-center justify-center text-white">
+                                        <span class="material-symbols-outlined !text-[18px] !font-bold">lock_reset</span>
+                                    </div>
+                                    <span class="text-sm font-sans font-medium text-white">Change Lock Screen</span>
+                                </div>
+                                <span class="material-symbols-outlined text-[#555] !text-[20px]">chevron_right</span>
+                            </div>
+
+                            <!-- App Version -->
+                            <div class="flex items-center justify-between p-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-[#3a2f28] flex items-center justify-center text-primary">
+                                        <span class="material-symbols-outlined !text-[18px]">info</span>
+                                    </div>
+                                    <span class="text-sm font-sans font-medium text-white">App Version</span>
+                                </div>
+                                <span class="text-xs font-sans text-on-surface-variant font-medium opacity-85">v2.4.0-stable</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Navigation Bar (Android bottom buttons inside settings) -->
+                <nav class="w-[calc(100%+3rem)] -mx-6 -mb-2 bg-[#0a0a0a] border-t border-white/5 py-1 px-6 flex flex-col z-20">
+                    <!-- Nav Tabs (Home / Settings / Hide) -->
+                    <div class="flex justify-around items-center w-full py-1">
+                        <button class="flex flex-col items-center gap-0.5 text-white/40 active-press" id="btn-nav-home">
+                            <span class="material-symbols-outlined !text-[22px]">home</span>
+                            <span class="text-[8px] font-semibold tracking-wider">Home</span>
+                        </button>
+                        <button class="flex flex-col items-center gap-0.5 text-primary active-press" id="btn-nav-settings">
+                            <span class="material-symbols-outlined !text-[22px]">settings</span>
+                            <span class="text-[8px] font-bold tracking-wider">Settings</span>
+                        </button>
+                        <button class="flex flex-col items-center gap-0.5 text-white/40 active-press" id="btn-nav-hide">
+                            <span class="material-symbols-outlined !text-[22px]">visibility_off</span>
+                            <span class="text-[8px] font-semibold tracking-wider">Hide</span>
+                        </button>
+                    </div>
+
+                    <!-- Android 3-Button Nav Bar -->
+                    <div class="w-full flex justify-around items-center text-white/20 py-2 mt-1 border-t border-white/[0.03]">
+                        <button class="active-press flex items-center justify-center w-10 h-5" id="btn-settings-nav-back">
+                            <span class="material-symbols-outlined !text-[18px]">chevron_left</span>
+                        </button>
+                        <button class="active-press flex items-center justify-center w-10 h-5" id="btn-settings-nav-home">
+                            <span class="material-symbols-outlined !text-[14px]">circle</span>
+                        </button>
+                        <button class="active-press flex items-center justify-center w-10 h-5">
+                            <span class="material-symbols-outlined !text-[14px]">square</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- 3. BLACK SCREEN VIEW -->
+            <div class="absolute inset-0 w-full h-full flex flex-col bg-black z-0 transition-layer opacity-0 pointer-events-none cursor-none" id="view-black-screen">
+            </div>
+
+            <!-- 4. LOCK SCREEN VIEW (Android Material Style) -->
+            <div class="absolute inset-0 w-full h-full flex flex-col justify-between p-6 pb-6 z-0 transition-layer opacity-0 pointer-events-none" id="view-lock-screen">
+                <!-- Wallpaper Layer -->
+                <div class="absolute inset-0 bg-cover bg-center z-0 scale-[1.1]" id="lock-wallpaper-layer"></div>
+
+
+
+                <!-- Android Lock Padlock (Pulsing) -->
+                <section class="absolute top-[48px] left-1/2 -translate-x-1/2 z-10 text-white/90 drop-shadow-md">
+                    <span class="material-symbols-outlined !text-[20px] animate-pulse">lock</span>
+                </section>
+
+                <!-- Clock / Date Section (Android Center Layout) -->
+                <section class="mt-14 text-center text-white drop-shadow-2xl z-10 relative">
+                    <h1 class="font-sans text-[78px] font-semibold tracking-tight leading-none" id="lock-clock-text">15:46</h1>
+                    <p class="font-sans text-[20px] font-medium mt-1.5 opacity-90" id="lock-date-text">7 Haziran Pazar</p>
+                </section>
+
+                <!-- Material Android Notification Card -->
+                <section class="w-full flex flex-col items-center mb-auto mt-12 z-10 relative px-1">
+                    <div class="glass-panel w-full px-3 py-2.5 rounded-[18px] flex flex-col gap-1.5 shadow-[0_20px_40px_rgba(0,0,0,0.4)] opacity-0 -translate-y-[20px] transition-all duration-500 ease-out" id="lock-notification-card">
+                        <div class="flex justify-between items-center w-full">
+                            <div class="flex items-center gap-2">
+                                <div class="w-[26px] h-[26px] bg-primary flex items-center justify-center rounded-full shadow-sm text-black">
+                                    <span class="material-symbols-outlined !text-[16px] !font-bold">schedule</span>
+                                </div>
+                                <span class="font-sans text-[15px] font-bold text-primary uppercase tracking-wider">TIMER</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] text-white/40">now</span>
+                                <button class="active-press flex items-center justify-center p-1.5 rounded-full hover:bg-white/10" id="btn-notif-reset" title="Snooze Alarm">
+                                    <span class="material-symbols-outlined text-primary !text-[22px]">refresh</span>
+                                </button>
+                                <button class="active-press flex items-center justify-center p-1.5 rounded-full hover:bg-white/10" id="btn-close-notification" title="Stop Alarm">
+                                    <span class="material-symbols-outlined text-primary !text-[22px]">close</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-sans text-[14px] font-bold text-white uppercase tracking-tight" id="notif-title-label">TIMER</span>
+                        </div>
+                    </div>
+                </section>
+
+
+
+                <!-- Android 3-Button Nav Bar on Lockscreen -->
+                <section class="w-[calc(100%+3rem)] -mx-6 -mb-6 bg-black/30 backdrop-blur-md py-3 px-12 flex justify-around items-center text-white/40 z-10 relative" id="btn-home-indicator">
+                    <button class="active-press flex items-center justify-center w-10 h-5" title="Swipe Up/Tap to Unlock">
+                        <span class="material-symbols-outlined !text-[18px]">chevron_left</span>
+                    </button>
+                    <button class="active-press flex items-center justify-center w-10 h-5" title="Swipe Up/Tap to Unlock">
+                        <span class="material-symbols-outlined !text-[14px]">circle</span>
+                    </button>
+                    <button class="active-press flex items-center justify-center w-10 h-5">
+                        <span class="material-symbols-outlined !text-[14px]">square</span>
+                    </button>
+                </section>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Hidden audio player -->
+<audio id="hidden-audio-player" loop></audio>
+
+<script>
+    // State Config
+    const state = {
+        currentView: 'dashboard',
+        selectedWallpaperUrl: 'https://lh3.googleusercontent.com/aida/AP1WRLsaLdo-HR5UkOypiNG7o7m2dolIzeE8hK4co6z7mq5p97WBqYbwyBKqeA1us3pda6_s-4gxIbJ_zSP9mEO0pnQQENFjQEjmc8DdLLGvPIJ6Uq9CvlYBMYTmJIN-e6UaJezp9J49dPEynftmF3tIRoSUak3ipVnO9HOpSFfU1ZcSYjSY5ZUkawK6ozJRja_FKHhFWATVdLfsFNbtEt-JHOV0t6rzSND1Qn-3VRHxCn38nTFy0f1WwzaehA_I',
+        customWallpaperDataUrl: null,
+        notifTitle: 'TIMER',
+        notifDesc: "00:00:00 - Time's up!",
+        alarmSound: 'beep', // beep, siren, bell, custom
+        customAudioDataUrl: null,
+        volume: 0.7,
+        isFlashlightOn: false,
+        isCameraOn: false
+    };
+
+    // Load configs
+    function loadSavedState() {
+        try {
+            const saved = localStorage.getItem('lock_screen_sim_settings_v3');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                state.notifTitle = parsed.notifTitle || state.notifTitle;
+                state.notifDesc = parsed.notifDesc || state.notifDesc;
+                state.alarmSound = parsed.alarmSound || state.alarmSound;
+                state.volume = parsed.volume !== undefined ? parsed.volume : state.volume;
+                state.selectedWallpaperUrl = parsed.selectedWallpaperUrl || state.selectedWallpaperUrl;
+                state.customWallpaperDataUrl = parsed.customWallpaperDataUrl || null;
+                state.customAudioDataUrl = parsed.customAudioDataUrl || null;
+                
+                // Set inputs
+                document.getElementById('input-notif-title').value = state.notifTitle;
+                document.getElementById('select-settings-sound').value = state.alarmSound;
+                document.getElementById('slider-settings-volume').value = state.volume;
+                
+                if (state.alarmSound === 'custom') {
+                    document.getElementById('settings-audio-row').classList.remove('hidden');
+                }
+
+                // Highlight active wallpaper preset
+                const items = document.querySelectorAll('.wp-item-settings');
+                items.forEach(item => {
+                    item.classList.remove('border-primary');
+                    item.classList.add('border-transparent');
+                    if (item.getAttribute('data-wp-url') === state.selectedWallpaperUrl && !state.customWallpaperDataUrl) {
+                        item.classList.add('border-primary');
+                        item.classList.remove('border-transparent');
+                    }
+                });
+                
+                if (state.customWallpaperDataUrl) {
+                    setCustomWallpaperActiveStyle();
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // Save configs
+    function saveState() {
+        try {
+            const dataToSave = {
+                notifTitle: state.notifTitle,
+                notifDesc: state.notifDesc,
+                alarmSound: state.alarmSound,
+                volume: state.volume,
+                selectedWallpaperUrl: state.selectedWallpaperUrl,
+                customWallpaperDataUrl: state.customWallpaperDataUrl,
+                customAudioDataUrl: state.customAudioDataUrl
+            };
+            localStorage.setItem('lock_screen_sim_settings_v3', JSON.stringify(dataToSave));
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // Audio Synthesizer Class (Web Audio API)
+    class AlarmSynthesizer {
+        constructor() {
+            this.ctx = null;
+            this.oscillator1 = null;
+            this.gainNode = null;
+            this.intervalId = null;
+            this.isPlaying = false;
+        }
+
+        init() {
+            if (!this.ctx) {
+                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        play(preset, volume) {
+            this.init();
+            if (this.isPlaying) this.stop();
+            this.isPlaying = true;
+            this.ctx.resume();
+
+            this.gainNode = this.ctx.createGain();
+            this.gainNode.gain.setValueAtTime(volume, this.ctx.currentTime);
+            this.gainNode.connect(this.ctx.destination);
+
+            if (preset === 'beep') {
+                this.playBeepPattern();
+            } else if (preset === 'siren') {
+                this.playSirenPattern();
+            } else if (preset === 'bell') {
+                this.playBellPattern();
+            }
+        }
+
+        playBeepPattern() {
+            let toggle = false;
+            const runBeep = () => {
+                if (!this.isPlaying) return;
+                toggle = !toggle;
+                
+                if (toggle) {
+                    const osc = this.ctx.createOscillator();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(950, this.ctx.currentTime);
+                    
+                    const beepGain = this.ctx.createGain();
+                    beepGain.gain.setValueAtTime(0.8, this.ctx.currentTime);
+                    
+                    osc.connect(beepGain);
+                    beepGain.connect(this.gainNode);
+                    
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + 0.15);
+                    
+                    setTimeout(() => {
+                        if (!this.isPlaying) return;
+                        const osc2 = this.ctx.createOscillator();
+                        osc2.type = 'square';
+                        osc2.frequency.setValueAtTime(950, this.ctx.currentTime);
+                        
+                        const beepGain2 = this.ctx.createGain();
+                        beepGain2.gain.setValueAtTime(0.8, this.ctx.currentTime);
+                        
+                        osc2.connect(beepGain2);
+                        beepGain2.connect(this.gainNode);
+                        
+                        osc2.start();
+                        osc2.stop(this.ctx.currentTime + 0.15);
+                    }, 200);
+                }
+            };
+            runBeep();
+            this.intervalId = setInterval(runBeep, 800);
+        }
+
+        playSirenPattern() {
+            this.oscillator1 = this.ctx.createOscillator();
+            this.oscillator1.type = 'sawtooth';
+            this.oscillator1.frequency.setValueAtTime(500, this.ctx.currentTime);
+
+            this.oscillator1.connect(this.gainNode);
+            this.oscillator1.start();
+
+            let pitchToggle = false;
+            const runSiren = () => {
+                if (!this.isPlaying) return;
+                pitchToggle = !pitchToggle;
+                const freq = pitchToggle ? 950 : 550;
+                this.oscillator1.frequency.exponentialRampToValueAtTime(freq, this.ctx.currentTime + 0.45);
+            };
+            
+            runSiren();
+            this.intervalId = setInterval(runSiren, 500);
+        }
+
+        playBellPattern() {
+            const runBell = () => {
+                if (!this.isPlaying) return;
+                
+                const osc = this.ctx.createOscillator();
+                const oscRing = this.ctx.createOscillator();
+                
+                osc.type = 'sine';
+                oscRing.type = 'triangle';
+                
+                osc.frequency.setValueAtTime(784, this.ctx.currentTime);
+                oscRing.frequency.setValueAtTime(790, this.ctx.currentTime);
+                
+                const decayGain = this.ctx.createGain();
+                decayGain.gain.setValueAtTime(0.7, this.ctx.currentTime);
+                decayGain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.9);
+                
+                osc.connect(decayGain);
+                oscRing.connect(decayGain);
+                decayGain.connect(this.gainNode);
+                
+                osc.start();
+                oscRing.start();
+                osc.stop(this.ctx.currentTime + 1.0);
+                oscRing.stop(this.ctx.currentTime + 1.0);
+            };
+            runBell();
+            this.intervalId = setInterval(runBell, 1000);
+        }
+
+        stop() {
+            this.isPlaying = false;
+            if (this.intervalId) {
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+            }
+            if (this.oscillator1) {
+                try { this.oscillator1.stop(); } catch(e) {}
+                this.oscillator1 = null;
+            }
+            if (this.ctx) {
+                try { this.ctx.suspend(); } catch(e) {}
+            }
+        }
+    }
+
+    const synth = new AlarmSynthesizer();
+    const customAudioPlayer = document.getElementById('hidden-audio-player');
+    let isTestAlarmPlaying = false;
+
+    // Toggle Preview sound from Settings
+    function togglePreviewAlarm() {
+        const btn = document.getElementById('btn-settings-test-sound');
+        
+        if (isTestAlarmPlaying) {
+            synth.stop();
+            customAudioPlayer.pause();
+            customAudioPlayer.currentTime = 0;
+            
+            btn.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
+            isTestAlarmPlaying = false;
+        } else {
+            isTestAlarmPlaying = true;
+            btn.innerHTML = '<span class="material-symbols-outlined">stop</span>';
+            
+            if (state.alarmSound === 'custom') {
+                if (state.customAudioDataUrl) {
+                    customAudioPlayer.src = state.customAudioDataUrl;
+                    customAudioPlayer.volume = state.volume;
+                    customAudioPlayer.play().catch(err => {
+                        console.error(err);
+                        alert('Custom sound file error. Check file format.');
+                        togglePreviewAlarm();
+                    });
+                } else {
+                    alert('Please load an audio file first.');
+                    togglePreviewAlarm();
+                }
+            } else {
+                synth.play(state.alarmSound, state.volume);
+            }
+        }
+    }
+
+    // Start simulated Ringing state on lock screen
+    function startRinging() {
+        if (isTestAlarmPlaying) {
+            togglePreviewAlarm();
+        }
+        
+        const card = document.getElementById('lock-notification-card');
+        setTimeout(() => {
+            card.classList.remove('opacity-0', '-translate-y-[20px]');
+            card.classList.add('opacity-100', 'translate-y-0');
+        }, 400);
+
+        if (state.alarmSound === 'custom') {
+            if (state.customAudioDataUrl) {
+                customAudioPlayer.src = state.customAudioDataUrl;
+                customAudioPlayer.volume = state.volume;
+                customAudioPlayer.play().catch(e => console.error(e));
+            } else {
+                synth.play('beep', state.volume);
+            }
+        } else {
+            synth.play(state.alarmSound, state.volume);
+        }
+    }
+
+    // Stop Ringing state
+    function stopRinging() {
+        synth.stop();
+        customAudioPlayer.pause();
+        customAudioPlayer.currentTime = 0;
+        
+        const card = document.getElementById('lock-notification-card');
+        card.classList.remove('opacity-100', 'translate-y-0');
+        card.classList.add('opacity-0', '-translate-y-[20px]');
+    }
+
+    // View Navigation Control
+    function setView(viewName) {
+        state.currentView = viewName;
+        
+        const dashboard = document.getElementById('view-dashboard');
+        const settings = document.getElementById('view-settings');
+        const blackScreen = document.getElementById('view-black-screen');
+        const lockScreen = document.getElementById('view-lock-screen');
+        
+        // Remove visibility classes
+        [dashboard, settings, blackScreen, lockScreen].forEach(view => {
+            view.classList.remove('opacity-100', 'pointer-events-auto');
+            view.classList.add('opacity-0', 'pointer-events-none');
+            view.style.zIndex = '0';
+        });
+
+        // notch show/hide
+        const notch = document.querySelector('.phone-notch');
+        if (notch) {
+            if (viewName === 'black') {
+                notch.style.display = 'none';
+            } else {
+                if (window.innerWidth > 768) notch.style.display = 'block';
+            }
+        }
+
+        if (viewName === 'dashboard') {
+            dashboard.classList.remove('opacity-0', 'pointer-events-none');
+            dashboard.classList.add('opacity-100', 'pointer-events-auto');
+            dashboard.style.zIndex = '20';
+        } else if (viewName === 'settings') {
+            settings.classList.remove('opacity-0', 'pointer-events-none');
+            settings.classList.add('opacity-100', 'pointer-events-auto');
+            settings.style.zIndex = '20';
+        } else if (viewName === 'black') {
+            blackScreen.classList.remove('opacity-0', 'pointer-events-none');
+            blackScreen.classList.add('opacity-100', 'pointer-events-auto');
+            blackScreen.style.zIndex = '20';
+            
+            // Temporary indicator toast
+            const helperToast = document.getElementById('black-screen-helper-toast');
+            helperToast.style.opacity = '1';
+            setTimeout(() => {
+                if (state.currentView === 'black') {
+                    helperToast.style.transition = 'opacity 1s ease-out';
+                    helperToast.style.opacity = '0';
+                }
+            }, 3000);
+
+        } else if (viewName === 'lock') {
+            const wallLayer = document.getElementById('lock-wallpaper-layer');
+            const url = state.customWallpaperDataUrl || state.selectedWallpaperUrl;
+            wallLayer.style.backgroundImage = `url('${url}')`;
+
+            // Setup notification text content from inputs
+            document.getElementById('notif-title-label').textContent = state.notifTitle;
+            
+            // Update clock and ring!
+            lockScreen.classList.remove('opacity-0', 'pointer-events-none');
+            lockScreen.classList.add('opacity-100', 'pointer-events-auto');
+            lockScreen.style.zIndex = '20';
+            
+            updateClock();
+            startRinging();
+        }
+    }
+
+    // Clock update (Turkish date style as per Lock Screen Image 3)
+    function updateClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        
+        // Lock clock
+        const clockEl = document.getElementById('lock-clock-text');
+        if (clockEl) clockEl.textContent = `${hours}:${minutes}`;
+
+        // Home status clock (Image 2 style)
+        const homeClock = document.getElementById('home-status-time');
+        if (homeClock) homeClock.textContent = `${hours}:${minutes}`;
+
+        // Settings status clock
+        const settingsClock = document.getElementById('settings-status-time');
+        if (settingsClock) settingsClock.textContent = `${hours}:${minutes}`;
+
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        const dayName = days[now.getDay()];
+        const dayNum = now.getDate();
+        const monthName = months[now.getMonth()];
+        
+        const dateEl = document.getElementById('lock-date-text');
+        if (dateEl) dateEl.textContent = `${dayName}, ${monthName} ${dayNum}`;
+    }
+    setInterval(updateClock, 10000);
+
+    // Canvas image compressor for custom wallpaper
+    function processAndStoreWallpaper(file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const maxDim = 900;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxDim || height > maxDim) {
+                    if (width > height) {
+                        height *= maxDim / width;
+                        width = maxDim;
+                    } else {
+                        width *= maxDim / height;
+                        height = maxDim;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const compressedUrl = canvas.toDataURL('image/jpeg', 0.75);
+                state.customWallpaperDataUrl = compressedUrl;
+                state.selectedWallpaperUrl = ''; 
+                
+                saveState();
+                setCustomWallpaperActiveStyle();
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function setCustomWallpaperActiveStyle() {
+        const items = document.querySelectorAll('.wp-item-settings');
+        items.forEach(item => {
+            item.classList.remove('border-primary');
+            item.classList.add('border-transparent');
+        });
+        
+        const customBtn = document.getElementById('btn-settings-custom-wp');
+        customBtn.classList.remove('border-primary');
+        customBtn.classList.add('bg-primary/20', 'border-primary');
+    }
+
+    function clearCustomWallpaperActiveStyle() {
+        const customBtn = document.getElementById('btn-settings-custom-wp');
+        customBtn.classList.remove('bg-primary/20');
+        customBtn.classList.add('bg-surface-container-high');
+    }
+
+    // Audio file uploader
+    function processAndStoreAudio(file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            state.customAudioDataUrl = event.target.result;
+            saveState();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Trigger lock screen wakeup on Volume Up keypress
+    function triggerWakeup() {
+        if (state.currentView === 'black') {
+            setView('lock');
+        }
+    }
+
+    // Event listeners
+    function initListeners() {
+        // Start simulation from home button click
+        document.getElementById('btn-start-simulation').addEventListener('click', () => {
+            synth.init();
+            setView('black');
+        });
+
+        // Settings trigger buttons
+        document.getElementById('btn-goto-settings').addEventListener('click', () => {
+            setView('settings');
+        });
+
+        // Bottom Nav controls (Settings tab)
+        document.getElementById('btn-nav-home').addEventListener('click', () => {
+            setView('dashboard');
+        });
+        
+        document.getElementById('btn-nav-hide').addEventListener('click', () => {
+            setView('black');
+        });
+
+        // Settings Android nav buttons
+        document.getElementById('btn-settings-nav-back').addEventListener('click', () => {
+            setView('dashboard');
+        });
+        document.getElementById('btn-settings-nav-home').addEventListener('click', () => {
+            setView('dashboard');
+        });
+
+        // Mockup volume up click
+        document.getElementById('physical-vol-up').addEventListener('click', () => {
+            triggerWakeup();
+        });
+
+        // Mockup power key click
+        document.getElementById('physical-power').addEventListener('click', () => {
+            if (state.currentView !== 'dashboard') {
+                stopRinging();
+                setView('dashboard');
+            }
+        });
+
+        // Volume Up key event listeners (Arrow Up simulator fallback)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'AudioVolumeUp' || e.key === 'VolumeUp' || e.key === 'ArrowUp') {
+                if (state.currentView === 'black') {
+                    e.preventDefault();
+                    triggerWakeup();
+                }
+            }
+            if (e.key === 'Escape') {
+                if (state.currentView !== 'dashboard') {
+                    stopRinging();
+                    setView('dashboard');
+                }
+            }
+        });
+
+        // Notification inputs
+        document.getElementById('input-notif-title').addEventListener('input', (e) => {
+            state.notifTitle = e.target.value;
+            saveState();
+        });
+
+        // Settings sound picker
+        const soundSelect = document.getElementById('select-settings-sound');
+        const customAudioRow = document.getElementById('settings-audio-row');
+        soundSelect.addEventListener('change', (e) => {
+            state.alarmSound = e.target.value;
+            if (state.alarmSound === 'custom') {
+                customAudioRow.classList.remove('hidden');
+            } else {
+                customAudioRow.classList.add('hidden');
+            }
+            saveState();
+        });
+
+        // Settings audio file input
+        document.getElementById('btn-choose-audio-file').addEventListener('click', () => {
+            document.getElementById('input-settings-audio').click();
+        });
+
+        document.getElementById('input-settings-audio').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 2.5 * 1024 * 1024) {
+                    alert('Audio file too large! Choose a file below 2.5MB.');
+                    e.target.value = '';
+                    return;
+                }
+                document.getElementById('audio-file-name').textContent = file.name;
+                processAndStoreAudio(file);
+            }
+        });
+
+        // Preview sound btn
+        document.getElementById('btn-settings-test-sound').addEventListener('click', () => {
+            togglePreviewAlarm();
+        });
+
+        // Volume slider
+        document.getElementById('slider-settings-volume').addEventListener('input', (e) => {
+            state.volume = parseFloat(e.target.value);
+            if (isTestAlarmPlaying) {
+                if (state.alarmSound === 'custom') {
+                    customAudioPlayer.volume = state.volume;
+                } else {
+                    synth.gainNode.gain.setValueAtTime(state.volume, synth.ctx.currentTime);
+                }
+            }
+            saveState();
+        });
+
+        // Preset Wallpaper Selectors (Inside settings tab)
+        const wpItems = document.querySelectorAll('.wp-item-settings');
+        wpItems.forEach(item => {
+            item.addEventListener('click', () => {
+                wpItems.forEach(x => {
+                    x.classList.remove('border-primary');
+                    x.classList.add('border-transparent');
+                });
+                item.classList.add('border-primary');
+                item.classList.remove('border-transparent');
+                
+                state.selectedWallpaperUrl = item.getAttribute('data-wp-url');
+                state.customWallpaperDataUrl = null; 
+                clearCustomWallpaperActiveStyle();
+                saveState();
+            });
+        });
+
+        // Custom Wallpaper selector
+        const fileInput = document.getElementById('input-settings-wp-file');
+        document.getElementById('btn-settings-custom-wp').addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                processAndStoreWallpaper(file);
+            }
+        });
+
+        // Advanced Change Lock Screen button opens upload dialog
+        document.getElementById('btn-advanced-lockscreen').addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Notification Close trigger
+        document.getElementById('btn-close-notification').addEventListener('click', () => {
+            stopRinging();
+        });
+
+        // btn-notif-reset intentionally has no listener — button is visible but inactive
+
+
+        // Home indicator click to unlock
+        document.getElementById('btn-home-indicator').addEventListener('click', () => {
+            stopRinging();
+            setView('dashboard');
+        });
+
+        // Lockscreen parallax moving background
+        document.body.addEventListener('mousemove', (e) => {
+            if (state.currentView === 'lock') {
+                const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+                const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+                const wallpaper = document.getElementById('lock-wallpaper-layer');
+                if(wallpaper) {
+                    wallpaper.style.transform = `scale(1.1) translate(${moveX}px, ${moveY}px)`;
+                }
+            }
+        });
+
+        // Touch trigger fallback on black screen for mobile users
+        document.getElementById('view-black-screen').addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                triggerWakeup();
+            }
+        });
+    }
+
+    // App Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+        loadSavedState();
+        initListeners();
+        updateClock();
+    });
+</script>
+
+<script>
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('SW registered:', reg.scope))
+                .catch(err => console.error('SW error:', err));
+        });
+    }
+</script>
+</body>
+</html>
