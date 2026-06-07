@@ -1,0 +1,8 @@
+{
+  "appId": "com.timerlock.app",
+  "appName": "Timer Lock",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
