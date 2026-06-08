@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Timer Lock Screen</title>
+    <title>Timer Dilatation</title>
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D97742">
@@ -16,7 +16,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Geist:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Geist:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Nunito:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
     
@@ -172,7 +172,13 @@
                 </header>
 
                 <!-- Center Large START Button -->
-                <div class="flex items-center justify-center flex-grow">
+                <div class="flex flex-col items-center justify-center flex-grow gap-6">
+                    <!-- App Title -->
+                    <div class="text-center">
+                        <p class="text-[22px] font-medium text-white/90 tracking-wide" style="font-family: 'Playfair Display', serif;">Timer Dilatation</p>
+                        <p class="text-[11px] text-white/30 tracking-widest uppercase font-sans mt-0.5">by Melih Güzerel</p>
+                    </div>
+
                     <button class="w-[210px] h-[210px] rounded-full bg-primary flex items-center justify-center text-black font-sans font-bold text-3xl tracking-widest shadow-[0_0_40px_rgba(217,119,66,0.3)] hover:shadow-[0_0_55px_rgba(217,119,66,0.55)] hover:scale-105 active:scale-[0.96] transition-all duration-300" id="btn-start-simulation">
                         START
                     </button>
@@ -180,10 +186,6 @@
 
                 <!-- Bottom Footer Section -->
                 <div class="w-full flex flex-col items-center gap-4">
-                    <p class="text-[9px] font-mono tracking-widest text-[#555] font-semibold text-center uppercase">
-                        TIMER DELITATION BY MELIH GÜZEREL
-                    </p>
-                    
                     <!-- Settings Button trigger -->
                     <button class="flex flex-col items-center gap-1 active-press" id="btn-goto-settings">
                         <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-black shadow-md hover:bg-primary/95">
@@ -191,19 +193,6 @@
                         </div>
                         <span class="text-[9px] font-bold text-primary tracking-widest uppercase">SETTINGS</span>
                     </button>
-
-                    <!-- Android 3-Button Navigation Bar -->
-                    <div class="w-[calc(100%+3rem)] -mx-6 bg-transparent py-2.5 px-12 flex justify-around items-center text-white/40 mt-1">
-                        <button class="active-press flex items-center justify-center w-10 h-6" title="Back (Go to Dashboard)">
-                            <span class="material-symbols-outlined !text-[18px]">chevron_left</span>
-                        </button>
-                        <button class="active-press flex items-center justify-center w-10 h-6" title="Home (Go to Dashboard)">
-                            <span class="material-symbols-outlined !text-[14px]">circle</span>
-                        </button>
-                        <button class="active-press flex items-center justify-center w-10 h-6" title="Recents (Inactive)">
-                            <span class="material-symbols-outlined !text-[14px]">square</span>
-                        </button>
-                    </div>
                 </div>
             </div>
 
@@ -278,28 +267,20 @@
                                 <input type="file" id="input-settings-wp-file" accept="image/*" class="hidden">
                             </div>
 
-                            <!-- Alert sound & volume -->
+                            <!-- Alert sound (Custom only) -->
                             <div class="flex flex-col gap-2 border-t border-white/5 pt-3">
-                                <label class="text-[10px] font-sans font-bold text-primary tracking-wider uppercase">Siren Sound Config</label>
-                                <div class="flex gap-2 items-center">
-                                    <select class="flex-grow bg-[#222] border border-white/10 rounded-xl p-2.5 text-white text-xs outline-none cursor-pointer" id="select-settings-sound">
-                                        <option value="beep">Digital Beep (Synth)</option>
-                                        <option value="siren">Emergency Siren (Synth)</option>
-                                        <option value="bell">Retro Bell (Synth)</option>
-                                        <option value="custom">Custom Audio File</option>
-                                    </select>
-                                    <button class="bg-[#222] border border-white/10 text-on-surface hover:text-primary w-[38px] h-[38px] rounded-xl flex items-center justify-center active-press" id="btn-settings-test-sound">
-                                        <span class="material-symbols-outlined !text-[18px]">volume_up</span>
-                                    </button>
-                                </div>
-                                <div class="hidden flex-col gap-1 mt-1" id="settings-audio-row">
+                                <label class="text-[10px] font-sans font-bold text-primary tracking-wider uppercase">Alarm Sound</label>
+                                <div class="flex flex-col gap-1">
                                     <div class="flex items-center gap-2">
                                         <button type="button" class="flex items-center gap-1.5 bg-[#222] border border-white/10 hover:border-primary/50 rounded-xl px-3 py-2 text-white text-xs font-semibold cursor-pointer active-press transition-colors" id="btn-choose-audio-file">
                                             <span class="material-symbols-outlined !text-[15px] text-primary">audio_file</span>
                                             Choose Audio File
                                         </button>
-                                        <span class="text-[10px] text-white/40 truncate max-w-[120px]" id="audio-file-name">No file selected</span>
+                                        <button class="bg-[#222] border border-white/10 text-on-surface hover:text-primary w-[38px] h-[38px] rounded-xl flex items-center justify-center active-press" id="btn-settings-test-sound">
+                                            <span class="material-symbols-outlined !text-[18px]">volume_up</span>
+                                        </button>
                                     </div>
+                                    <span class="text-[10px] text-white/40 truncate max-w-[200px] px-1" id="audio-file-name">No file selected</span>
                                     <input type="file" id="input-settings-audio" accept="audio/*" class="hidden">
                                 </div>
                                 <div class="flex items-center gap-3 text-xs text-on-surface-variant mt-1.5">
@@ -360,18 +341,7 @@
                         </button>
                     </div>
 
-                    <!-- Android 3-Button Nav Bar -->
-                    <div class="w-full flex justify-around items-center text-white/20 py-2 mt-1 border-t border-white/[0.03]">
-                        <button class="active-press flex items-center justify-center w-10 h-5" id="btn-settings-nav-back">
-                            <span class="material-symbols-outlined !text-[18px]">chevron_left</span>
-                        </button>
-                        <button class="active-press flex items-center justify-center w-10 h-5" id="btn-settings-nav-home">
-                            <span class="material-symbols-outlined !text-[14px]">circle</span>
-                        </button>
-                        <button class="active-press flex items-center justify-center w-10 h-5">
-                            <span class="material-symbols-outlined !text-[14px]">square</span>
-                        </button>
-                    </div>
+
                 </nav>
             </div>
 
@@ -392,9 +362,9 @@
                 </section>
 
                 <!-- Clock / Date Section (Android Center Layout) -->
-                <section class="mt-14 text-center text-white drop-shadow-2xl z-10 relative">
-                    <h1 class="font-sans text-[78px] font-semibold tracking-tight leading-none" id="lock-clock-text">15:46</h1>
-                    <p class="font-sans text-[20px] font-medium mt-1.5 opacity-90" id="lock-date-text">7 Haziran Pazar</p>
+                <section class="mt-24 text-center text-white drop-shadow-2xl z-10 relative">
+                    <p class="text-[20px] font-medium opacity-90 mb-2" style="font-family: 'Nunito', sans-serif;" id="lock-date-text">7 Haziran Pazar</p>
+                    <h1 class="text-[78px] font-semibold tracking-tight leading-none" style="font-family: 'Nunito', sans-serif;" id="lock-clock-text">15:46</h1>
                 </section>
 
                 <!-- Material Android Notification Card -->
@@ -425,18 +395,7 @@
 
 
 
-                <!-- Android 3-Button Nav Bar on Lockscreen -->
-                <section class="w-[calc(100%+3rem)] -mx-6 -mb-6 bg-black/30 backdrop-blur-md py-3 px-12 flex justify-around items-center text-white/40 z-10 relative" id="btn-home-indicator">
-                    <button class="active-press flex items-center justify-center w-10 h-5" title="Swipe Up/Tap to Unlock">
-                        <span class="material-symbols-outlined !text-[18px]">chevron_left</span>
-                    </button>
-                    <button class="active-press flex items-center justify-center w-10 h-5" title="Swipe Up/Tap to Unlock">
-                        <span class="material-symbols-outlined !text-[14px]">circle</span>
-                    </button>
-                    <button class="active-press flex items-center justify-center w-10 h-5">
-                        <span class="material-symbols-outlined !text-[14px]">square</span>
-                    </button>
-                </section>
+
             </div>
 
         </div>
@@ -454,7 +413,7 @@
         customWallpaperDataUrl: null,
         notifTitle: 'TIMER',
         notifDesc: "00:00:00 - Time's up!",
-        alarmSound: 'beep', // beep, siren, bell, custom
+        alarmSound: 'custom', // always custom
         customAudioDataUrl: null,
         volume: 0.7,
         isFlashlightOn: false,
@@ -469,7 +428,7 @@
                 const parsed = JSON.parse(saved);
                 state.notifTitle = parsed.notifTitle || state.notifTitle;
                 state.notifDesc = parsed.notifDesc || state.notifDesc;
-                state.alarmSound = parsed.alarmSound || state.alarmSound;
+                state.alarmSound = 'custom';
                 state.volume = parsed.volume !== undefined ? parsed.volume : state.volume;
                 state.selectedWallpaperUrl = parsed.selectedWallpaperUrl || state.selectedWallpaperUrl;
                 state.customWallpaperDataUrl = parsed.customWallpaperDataUrl || null;
@@ -522,149 +481,7 @@
         }
     }
 
-    // Audio Synthesizer Class (Web Audio API)
-    class AlarmSynthesizer {
-        constructor() {
-            this.ctx = null;
-            this.oscillator1 = null;
-            this.gainNode = null;
-            this.intervalId = null;
-            this.isPlaying = false;
-        }
-
-        init() {
-            if (!this.ctx) {
-                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        play(preset, volume) {
-            this.init();
-            if (this.isPlaying) this.stop();
-            this.isPlaying = true;
-            this.ctx.resume();
-
-            this.gainNode = this.ctx.createGain();
-            this.gainNode.gain.setValueAtTime(volume, this.ctx.currentTime);
-            this.gainNode.connect(this.ctx.destination);
-
-            if (preset === 'beep') {
-                this.playBeepPattern();
-            } else if (preset === 'siren') {
-                this.playSirenPattern();
-            } else if (preset === 'bell') {
-                this.playBellPattern();
-            }
-        }
-
-        playBeepPattern() {
-            let toggle = false;
-            const runBeep = () => {
-                if (!this.isPlaying) return;
-                toggle = !toggle;
-                
-                if (toggle) {
-                    const osc = this.ctx.createOscillator();
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(950, this.ctx.currentTime);
-                    
-                    const beepGain = this.ctx.createGain();
-                    beepGain.gain.setValueAtTime(0.8, this.ctx.currentTime);
-                    
-                    osc.connect(beepGain);
-                    beepGain.connect(this.gainNode);
-                    
-                    osc.start();
-                    osc.stop(this.ctx.currentTime + 0.15);
-                    
-                    setTimeout(() => {
-                        if (!this.isPlaying) return;
-                        const osc2 = this.ctx.createOscillator();
-                        osc2.type = 'square';
-                        osc2.frequency.setValueAtTime(950, this.ctx.currentTime);
-                        
-                        const beepGain2 = this.ctx.createGain();
-                        beepGain2.gain.setValueAtTime(0.8, this.ctx.currentTime);
-                        
-                        osc2.connect(beepGain2);
-                        beepGain2.connect(this.gainNode);
-                        
-                        osc2.start();
-                        osc2.stop(this.ctx.currentTime + 0.15);
-                    }, 200);
-                }
-            };
-            runBeep();
-            this.intervalId = setInterval(runBeep, 800);
-        }
-
-        playSirenPattern() {
-            this.oscillator1 = this.ctx.createOscillator();
-            this.oscillator1.type = 'sawtooth';
-            this.oscillator1.frequency.setValueAtTime(500, this.ctx.currentTime);
-
-            this.oscillator1.connect(this.gainNode);
-            this.oscillator1.start();
-
-            let pitchToggle = false;
-            const runSiren = () => {
-                if (!this.isPlaying) return;
-                pitchToggle = !pitchToggle;
-                const freq = pitchToggle ? 950 : 550;
-                this.oscillator1.frequency.exponentialRampToValueAtTime(freq, this.ctx.currentTime + 0.45);
-            };
-            
-            runSiren();
-            this.intervalId = setInterval(runSiren, 500);
-        }
-
-        playBellPattern() {
-            const runBell = () => {
-                if (!this.isPlaying) return;
-                
-                const osc = this.ctx.createOscillator();
-                const oscRing = this.ctx.createOscillator();
-                
-                osc.type = 'sine';
-                oscRing.type = 'triangle';
-                
-                osc.frequency.setValueAtTime(784, this.ctx.currentTime);
-                oscRing.frequency.setValueAtTime(790, this.ctx.currentTime);
-                
-                const decayGain = this.ctx.createGain();
-                decayGain.gain.setValueAtTime(0.7, this.ctx.currentTime);
-                decayGain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.9);
-                
-                osc.connect(decayGain);
-                oscRing.connect(decayGain);
-                decayGain.connect(this.gainNode);
-                
-                osc.start();
-                oscRing.start();
-                osc.stop(this.ctx.currentTime + 1.0);
-                oscRing.stop(this.ctx.currentTime + 1.0);
-            };
-            runBell();
-            this.intervalId = setInterval(runBell, 1000);
-        }
-
-        stop() {
-            this.isPlaying = false;
-            if (this.intervalId) {
-                clearInterval(this.intervalId);
-                this.intervalId = null;
-            }
-            if (this.oscillator1) {
-                try { this.oscillator1.stop(); } catch(e) {}
-                this.oscillator1 = null;
-            }
-            if (this.ctx) {
-                try { this.ctx.suspend(); } catch(e) {}
-            }
-        }
-    }
-
-    const synth = new AlarmSynthesizer();
+    // No built-in synth sounds — custom audio only
     const customAudioPlayer = document.getElementById('hidden-audio-player');
     let isTestAlarmPlaying = false;
 
@@ -673,31 +490,23 @@
         const btn = document.getElementById('btn-settings-test-sound');
         
         if (isTestAlarmPlaying) {
-            synth.stop();
             customAudioPlayer.pause();
             customAudioPlayer.currentTime = 0;
-            
-            btn.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
+            btn.innerHTML = '<span class="material-symbols-outlined !text-[18px]">volume_up</span>';
             isTestAlarmPlaying = false;
         } else {
-            isTestAlarmPlaying = true;
-            btn.innerHTML = '<span class="material-symbols-outlined">stop</span>';
-            
-            if (state.alarmSound === 'custom') {
-                if (state.customAudioDataUrl) {
-                    customAudioPlayer.src = state.customAudioDataUrl;
-                    customAudioPlayer.volume = state.volume;
-                    customAudioPlayer.play().catch(err => {
-                        console.error(err);
-                        alert('Custom sound file error. Check file format.');
-                        togglePreviewAlarm();
-                    });
-                } else {
-                    alert('Please load an audio file first.');
+            if (state.customAudioDataUrl) {
+                isTestAlarmPlaying = true;
+                btn.innerHTML = '<span class="material-symbols-outlined !text-[18px]">stop</span>';
+                customAudioPlayer.src = state.customAudioDataUrl;
+                customAudioPlayer.volume = state.volume;
+                customAudioPlayer.play().catch(err => {
+                    console.error(err);
+                    alert('Ses dosyası hatası. Dosya formatını kontrol et.');
                     togglePreviewAlarm();
-                }
+                });
             } else {
-                synth.play(state.alarmSound, state.volume);
+                alert('Önce bir ses dosyası seç!');
             }
         }
     }
@@ -714,22 +523,16 @@
             card.classList.add('opacity-100', 'translate-y-0');
         }, 400);
 
-        if (state.alarmSound === 'custom') {
-            if (state.customAudioDataUrl) {
-                customAudioPlayer.src = state.customAudioDataUrl;
-                customAudioPlayer.volume = state.volume;
-                customAudioPlayer.play().catch(e => console.error(e));
-            } else {
-                synth.play('beep', state.volume);
-            }
-        } else {
-            synth.play(state.alarmSound, state.volume);
+        if (state.customAudioDataUrl) {
+            customAudioPlayer.src = state.customAudioDataUrl;
+            customAudioPlayer.volume = state.volume;
+            customAudioPlayer.play().catch(e => console.error(e));
         }
+        // If no custom file, alarm rings silently (visual only)
     }
 
     // Stop Ringing state
     function stopRinging() {
-        synth.stop();
         customAudioPlayer.pause();
         customAudioPlayer.currentTime = 0;
         

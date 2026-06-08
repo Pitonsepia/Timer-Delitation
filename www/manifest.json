@@ -1,6 +1,6 @@
 {
-  "name": "Timer Lock Screen",
-  "short_name": "TimerLock",
+  "name": "Timer Dilatation",
+  "short_name": "TimerDilat",
   "description": "Fake lock screen simulator with timer alarm",
   "start_url": "./index.html",
   "display": "fullscreen",

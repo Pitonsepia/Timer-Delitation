@@ -1,6 +1,6 @@
 {
   "appId": "com.timerlock.app",
-  "appName": "Timer Lock",
+  "appName": "Timer Dilatation",
   "webDir": "www",
   "server": {
     "androidScheme": "https"
