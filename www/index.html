@@ -165,18 +165,7 @@
             <!-- 1. HOME / START SCREEN (Android UI) -->
             <div class="absolute inset-0 w-full h-full flex flex-col justify-between bg-black p-6 pb-2 z-20 transition-layer opacity-100 pointer-events-auto" id="view-dashboard">
                 
-                <!-- Android Status bar -->
-                <header class="w-full flex justify-between items-center text-white/90 text-[11px] font-medium px-2">
-                    <div class="flex items-center gap-1.5">
-                        <span id="home-status-time">12:30</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="material-symbols-outlined !text-[13px] !font-bold">signal_cellular_alt</span>
-                        <span class="material-symbols-outlined !text-[13px]">wifi</span>
-                        <!-- Vertical Battery cylinder -->
-                        <span class="material-symbols-outlined !text-[14px] rotate-90">battery_5_bar</span>
-                    </div>
-                </header>
+
 
                 <!-- Center Large START Button -->
                 <div class="flex flex-col items-center justify-center flex-grow gap-6">
@@ -734,6 +723,11 @@
             setView('lock');
         }
     }
+
+    // Called directly from Android native (MainActivity.java)
+    window.__nativeWakeup = function() {
+        triggerWakeup();
+    };
 
     // Event listeners
     function initListeners() {

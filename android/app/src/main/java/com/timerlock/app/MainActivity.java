@@ -46,9 +46,10 @@ public class MainActivity extends BridgeActivity {
     }
 
     private void sendWakeupToJS() {
+        if (getBridge() == null || getBridge().getWebView() == null) return;
         getBridge().getWebView().post(() ->
             getBridge().getWebView().evaluateJavascript(
-                "window.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true}));",
+                "(function(){ window.__nativeWakeup(); })();",
                 null
             )
         );
@@ -57,19 +58,16 @@ public class MainActivity extends BridgeActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
-            // Hardware volume up
             case KeyEvent.KEYCODE_VOLUME_UP:
-            // BT camera remotes — most common keycodes
-            case KeyEvent.KEYCODE_ENTER:          // iOS/Android dual remotes
-            case KeyEvent.KEYCODE_VOLUME_DOWN:    // Some remotes use vol down
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_ENTER:
             case KeyEvent.KEYCODE_PAGE_UP:
             case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.KEYCODE_MEDIA_NEXT:
             case KeyEvent.KEYCODE_BUTTON_R1:
             case KeyEvent.KEYCODE_BUTTON_A:
                 sendWakeupToJS();
-                return true; // consume event
-
+                return true;
             default:
                 return super.onKeyDown(keyCode, event);
         }
