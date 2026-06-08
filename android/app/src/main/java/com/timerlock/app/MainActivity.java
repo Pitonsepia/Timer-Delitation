@@ -59,7 +59,9 @@ public class MainActivity extends BridgeActivity {
         switch (keyCode) {
             // Hardware volume up
             case KeyEvent.KEYCODE_VOLUME_UP:
-            // BT remotes - common keycodes
+            // BT camera remotes — most common keycodes
+            case KeyEvent.KEYCODE_ENTER:          // iOS/Android dual remotes
+            case KeyEvent.KEYCODE_VOLUME_DOWN:    // Some remotes use vol down
             case KeyEvent.KEYCODE_PAGE_UP:
             case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.KEYCODE_MEDIA_NEXT:

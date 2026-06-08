@@ -101,6 +101,13 @@
             width: 100vw;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            touch-action: none;
+        }
+
+        /* Lock screen — no scroll, no touch move */
+        #view-lock-screen {
+            touch-action: none;
+            overscroll-behavior: none;
         }
 
         /* Material You Glass Card for Android */
@@ -350,53 +357,65 @@
             </div>
 
             <!-- 4. LOCK SCREEN VIEW (Android Material Style) -->
-            <div class="absolute inset-0 w-full h-full flex flex-col justify-between p-6 pb-6 z-0 transition-layer opacity-0 pointer-events-none" id="view-lock-screen">
+            <div class="absolute inset-0 w-full h-full flex flex-col z-0 transition-layer opacity-0 pointer-events-none overflow-hidden" id="view-lock-screen">
                 <!-- Wallpaper Layer -->
-                <div class="absolute inset-0 bg-cover bg-center z-0 scale-[1.1]" id="lock-wallpaper-layer"></div>
+                <div class="absolute inset-0 bg-cover bg-center z-0" id="lock-wallpaper-layer"></div>
+                <!-- Dim overlay -->
+                <div class="absolute inset-0 bg-black/30 z-0"></div>
 
+                <!-- Status bar top -->
+                <header class="relative z-10 w-full flex justify-between items-center text-white/90 text-[12px] font-medium px-6 pt-4">
+                    <span id="lock-status-time">12:30</span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined !text-[13px]">signal_cellular_alt</span>
+                        <span class="material-symbols-outlined !text-[13px]">wifi</span>
+                        <span class="material-symbols-outlined !text-[14px] rotate-90">battery_5_bar</span>
+                    </div>
+                </header>
 
-
-                <!-- Android Lock Padlock (Pulsing) -->
-                <section class="absolute top-[48px] left-1/2 -translate-x-1/2 z-10 text-white/90 drop-shadow-md">
-                    <span class="material-symbols-outlined !text-[20px] animate-pulse">lock</span>
+                <!-- Clock / Date Section -->
+                <section class="relative z-10 text-center text-white drop-shadow-2xl mt-16 px-6">
+                    <h1 class="text-[96px] font-light tracking-tight leading-none" style="font-family: 'Nunito', sans-serif; font-weight: 300;" id="lock-clock-text">15:46</h1>
+                    <p class="text-[17px] font-normal opacity-80 mt-3" style="font-family: 'Nunito', sans-serif;" id="lock-date-text">Pazar, 8 Haziran</p>
                 </section>
 
-                <!-- Clock / Date Section (Android Center Layout) -->
-                <section class="mt-24 text-center text-white drop-shadow-2xl z-10 relative">
-                    <p class="text-[20px] font-medium opacity-90 mb-2" style="font-family: 'Nunito', sans-serif;" id="lock-date-text">7 Haziran Pazar</p>
-                    <h1 class="text-[78px] font-semibold tracking-tight leading-none" style="font-family: 'Nunito', sans-serif;" id="lock-clock-text">15:46</h1>
-                </section>
-
-                <!-- Material Android Notification Card -->
-                <section class="w-full flex flex-col items-center mb-auto mt-12 z-10 relative px-1">
-                    <div class="glass-panel w-full px-3 py-2.5 rounded-[18px] flex flex-col gap-1.5 shadow-[0_20px_40px_rgba(0,0,0,0.4)] opacity-0 -translate-y-[20px] transition-all duration-500 ease-out" id="lock-notification-card">
+                <!-- Notification Card -->
+                <section class="relative z-10 w-full px-4 mt-10">
+                    <div class="glass-panel w-full px-4 py-3 rounded-[20px] flex flex-col gap-2 shadow-[0_20px_40px_rgba(0,0,0,0.4)] opacity-0 -translate-y-[20px] transition-all duration-500 ease-out" id="lock-notification-card">
                         <div class="flex justify-between items-center w-full">
-                            <div class="flex items-center gap-2">
-                                <div class="w-[26px] h-[26px] bg-primary flex items-center justify-center rounded-full shadow-sm text-black">
-                                    <span class="material-symbols-outlined !text-[16px] !font-bold">schedule</span>
+                            <div class="flex items-center gap-2.5">
+                                <!-- Timer app icon (orange circle with timer icon) -->
+                                <div class="w-[32px] h-[32px] bg-[#FF6B1A] flex items-center justify-center rounded-full shadow-sm text-white">
+                                    <span class="material-symbols-outlined !text-[18px]">timer</span>
                                 </div>
-                                <span class="font-sans text-[15px] font-bold text-primary uppercase tracking-wider">TIMER</span>
+                                <div class="flex flex-col">
+                                    <span class="text-[12px] font-semibold text-white/60 tracking-wide">Timer Dilatation</span>
+                                    <span class="font-sans text-[15px] font-bold text-white" id="notif-title-label">TIMER</span>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] text-white/40">now</span>
-                                <button class="active-press flex items-center justify-center p-1.5 rounded-full hover:bg-white/10" id="btn-notif-reset" title="Snooze Alarm">
-                                    <span class="material-symbols-outlined text-primary !text-[22px]">refresh</span>
+                            <div class="flex items-center gap-1">
+                                <span class="text-[11px] text-white/40 mr-1">now</span>
+                                <button class="active-press flex items-center justify-center p-1.5 rounded-full hover:bg-white/10" id="btn-notif-reset" title="Snooze">
+                                    <span class="material-symbols-outlined text-white/80 !text-[20px]">refresh</span>
                                 </button>
-                                <button class="active-press flex items-center justify-center p-1.5 rounded-full hover:bg-white/10" id="btn-close-notification" title="Stop Alarm">
-                                    <span class="material-symbols-outlined text-primary !text-[22px]">close</span>
+                                <button class="active-press flex items-center justify-center p-1.5 rounded-full hover:bg-white/10" id="btn-close-notification" title="Stop">
+                                    <span class="material-symbols-outlined text-white/80 !text-[20px]">close</span>
                                 </button>
                             </div>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="font-sans text-[14px] font-bold text-white uppercase tracking-tight" id="notif-title-label">TIMER</span>
                         </div>
                     </div>
                 </section>
 
+                <!-- Spacer -->
+                <div class="flex-grow"></div>
 
-
-
+                <!-- Swipe up hint -->
+                <div class="relative z-10 flex flex-col items-center pb-8 gap-1">
+                    <span class="material-symbols-outlined text-white/50 !text-[22px] animate-bounce">keyboard_arrow_up</span>
+                    <p class="text-white/40 text-[12px] font-sans tracking-wider">Kilidini açmak için yukarı kaydır</p>
+                </div>
             </div>
+
 
         </div>
     </div>
@@ -608,33 +627,38 @@
         }
     }
 
-    // Clock update (Turkish date style as per Lock Screen Image 3)
+    // Clock update
     function updateClock() {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
+        const timeStr = `${hours}:${minutes}`;
         
         // Lock clock
         const clockEl = document.getElementById('lock-clock-text');
-        if (clockEl) clockEl.textContent = `${hours}:${minutes}`;
+        if (clockEl) clockEl.textContent = timeStr;
 
-        // Home status clock (Image 2 style)
+        // Lock status bar time
+        const lockStatus = document.getElementById('lock-status-time');
+        if (lockStatus) lockStatus.textContent = timeStr;
+
+        // Home status clock
         const homeClock = document.getElementById('home-status-time');
-        if (homeClock) homeClock.textContent = `${hours}:${minutes}`;
+        if (homeClock) homeClock.textContent = timeStr;
 
         // Settings status clock
         const settingsClock = document.getElementById('settings-status-time');
-        if (settingsClock) settingsClock.textContent = `${hours}:${minutes}`;
+        if (settingsClock) settingsClock.textContent = timeStr;
 
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+        const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
         
         const dayName = days[now.getDay()];
         const dayNum = now.getDate();
         const monthName = months[now.getMonth()];
         
         const dateEl = document.getElementById('lock-date-text');
-        if (dateEl) dateEl.textContent = `${dayName}, ${monthName} ${dayNum}`;
+        if (dateEl) dateEl.textContent = `${dayName}, ${dayNum} ${monthName}`;
     }
     setInterval(updateClock, 10000);
 
