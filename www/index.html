@@ -715,7 +715,6 @@
     function initListeners() {
         // Start simulation from home button click
         document.getElementById('btn-start-simulation').addEventListener('click', () => {
-            synth.init();
             setView('black');
         });
 
@@ -816,11 +815,7 @@
         document.getElementById('slider-settings-volume').addEventListener('input', (e) => {
             state.volume = parseFloat(e.target.value);
             if (isTestAlarmPlaying) {
-                if (state.alarmSound === 'custom') {
-                    customAudioPlayer.volume = state.volume;
-                } else {
-                    synth.gainNode.gain.setValueAtTime(state.volume, synth.ctx.currentTime);
-                }
+                customAudioPlayer.volume = state.volume;
             }
             saveState();
         });
